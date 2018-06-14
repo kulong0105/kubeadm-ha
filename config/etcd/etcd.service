@@ -1,0 +1,25 @@
+[Unit]
+Description=etcd
+Documentation=https://github.com/coreos/etcd
+Conflicts=etcd.service
+Conflicts=etcd2.service
+
+[Service]
+Type=notify
+Restart=always
+RestartSec=5s
+LimitNOFILE=40000
+TimeoutStartSec=0
+
+ExecStart=/usr/local/bin/etcd \
+	--name $hostname \
+	--data-dir $etcd_data_dir \
+	--listen-client-urls https://0.0.0.0:2379 \
+	--advertise-client-urls https://$ip:2379 \
+	--cert-file=/etc/kubernetes/pki/etcd/server.pem \
+	--key-file=/etc/kubernetes/pki/etcd/server-key.pem \
+	--client-cert-auth \
+	--trusted-ca-file=/etc/kubernetes/pki/etcd/ca.pem
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+apiVersion: kubeadm.k8s.io/v1alpha1
+kind: MasterConfiguration
+kubernetesVersion: $kubernetes_version
+api:
+  advertiseAddress: $keepalived_virtual_ip
+etcd:
+  endpoints:
+  - https://$ip_master1:2379
+  - https://$ip_master2:2379
+  - https://$ip_master3:2379
+  caFile: /etc/kubernetes/pki/etcd/ca.pem
+  certFile: /etc/kubernetes/pki/etcd/client.pem
+  keyFile: /etc/kubernetes/pki/etcd/client-key.pem
+  dataDir: $etcd_data_dir
+networking:
+  podSubnet: $pod_network_cidr
+  clusterCIDR: $service_cidr
+apiServerCertSANs:
+- 127.0.0.1
+- $hostname_master1
+- $hostname_master2
+- $hostname_master3
+- $ip_master1
+- $ip_master2
+- $ip_master3
+- $keepalived_virtual_ip
+apiServerExtraArgs:
+  apiserver-count: "3"
+tokenTTL: "0"
