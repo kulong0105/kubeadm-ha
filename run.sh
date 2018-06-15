@@ -206,10 +206,18 @@ check_deploy_config()
             ;;
         uninstall)
             local installed_ip="$K8S_SRC/.installed_ip"
-            check_files_exist "$installed_ip" || return
+            if check_files_exist "$installed_ip"; then
+                K8S_IP_MASTERS=$(grep "MASTER" $installed_ip  | awk '{print $2}')
+                K8S_IP_WORKERS=$(grep "WORKER" $installed_ip  | awk '{print $2}')
+            else
+                log_warn "cannot find $K8S_SRC/.installed_ip"
 
-            K8S_IP_MASTERS=$(grep "MASTER" $installed_ip  | awk '{print $2}')
-            K8S_IP_WORKERS=$(grep "WORKER" $installed_ip  | awk '{print $2}')
+                local deploy_config_file="$K8S_SRC/deploy.conf"
+                check_files_exist "$deploy_config_file" || return
+
+                K8S_IP_MASTERS=$(grep -v -e "^#" $deploy_config_file  | grep K8S_IP_MASTER | cut -f2 -d"=")
+                K8S_IP_WORKERS=$(grep -v -e "^#" $deploy_config_file  | grep K8S_IP_WORKER | cut -f2 -d"=")
+            fi
             ;;
    esac
 }
@@ -1075,7 +1083,7 @@ update_installed_ip()
 
     case $ACTION in
         install)
-            echo > $K8S_SRC/.installed_ip
+            rm -f $K8S_SRC/.installed_ip
             for ip in $K8S_IP_MASTERS; do
                 echo "MASTER: $ip" >> $K8S_SRC/.installed_ip
             done
@@ -1098,7 +1106,7 @@ update_installed_ip()
             done
             ;;
         uninstall)
-            echo > $K8S_SRC/.installed_ip
+            rm -f $K8S_SRC/.installed_ip
             ;;
     esac
 }
