@@ -394,6 +394,18 @@ update_k8s_config()
         return 1
     }
 
+    # serivce_cidr=10.96.0.0/12, cluster_dns=10.96.0.10
+    local cluster_dns="$(echo $SERVICE_CIDR | cut -f1-3 -d".").10"
+    $PSSH -H "$ips" -p $ips_num "sed -i \"s#cluster-dns=10.96.0.10#cluster-dns=$cluster_dns#\" $kubelet_config_file" || {
+        log_error "failed to update cluster-dns"
+        return 1
+    }
+
+    $PSSH -H "$ips" -p $ips_num "sed -i \"s#cgroup-driver=.*#cgroup-driver=cgroupfs\\\"#\" $kubelet_config_file" || {
+        log_error "failed to update cgroup driver"
+        return 1
+    }
+
 #   $PSSH -H "$ips" -p $ips_num "sed -i '2 i Environment="KUBELET_EXTRA_ARGS=--feature-gates=DevicePlugins=true"' $kubelet_config_file" || return
 
     start_enable_service "kubelet" "$ips" || return
