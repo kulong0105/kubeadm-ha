@@ -229,6 +229,8 @@ check_nodes_status()
 
 yum_install_pkg()
 {
+    log_info "installing pkg ..."
+
     local pkg="$1"
     local ips="$2"
     local ips_num=$(echo "$ips" | wc -w)
@@ -241,6 +243,8 @@ yum_install_pkg()
 
 yum_remove_pkg()
 {
+    log_info "removing pkg ..."
+
     local pkg="$1"
     local ips="$2"
     local ips_num=$(echo "$ips" | wc -w)
@@ -338,7 +342,7 @@ disable_swap()
         return 1
     }
 
-    $PSSH -H "$ips" -p $ips_num "sed -i \"s#.*swap.*#\#\0#\" /etc/fstab" &>/dev/null
+    $PSSH -H "$ips" -p $ips_num "sed -i \"s#.* swap .*#\#\0#\" /etc/fstab" &>/dev/null
 
     return 0
 }
@@ -973,6 +977,8 @@ init_k8s_network()
 
 remove_k8s_network()
 {
+    log_info "remove k8s network ..."
+
     local ips="$1"
     [[ -z "$ips" ]] && return
 
