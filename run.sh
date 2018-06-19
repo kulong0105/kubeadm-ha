@@ -380,6 +380,7 @@ enable_bridge_nf_call()
 
     local sysctl_k8s_conf="/tmp/k8s.conf"
     cat <<EOF > $sysctl_k8s_conf
+net.ipv4.ip_forward = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.bridge.bridge-nf-call-iptables = 1
 EOF
