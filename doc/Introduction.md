@@ -18,7 +18,19 @@
 - kubelet: is the primary node agent, watch for pods that have been assigned to its node
 - kube-proxy: enables the Kubernetes service abstraction by maintaining network rules on the host and performing connection forwarding
 
+
+## version
+
+| component | version |
+| --- | --- |
+| kubeadm | 1.9.7 |
+| kubectl | 1.9.7 |
+| calico | 3.1.1 |
+| etcd | 3.1.14 |
+
+
 ## features
+
 - one-click deployment
 - support non-HA and HA deployment
 - support add/remove worker node
