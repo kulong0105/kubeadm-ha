@@ -907,13 +907,11 @@ ha_scale_pods()
         log_error "failed to scale calico-kube-controllers"
         return 1
     }
-    validate_pod_state "$K8S_IP_MASTERS" "calico-kube-controllers" || return
 
     kubectl scale --replicas=3 -n kube-system deployment/kube-dns || {
         log_error "failed to scale kube-dns"
         return 1
     }
-    validate_pod_state "$K8S_IP_MASTERS" "kube-dns" || return
 }
 
 make_master_schedulable()
