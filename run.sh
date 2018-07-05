@@ -1005,6 +1005,29 @@ remove_k8s_network()
     $PSSH -H "$ips" -p $ips_num "rm -rf /var/run/calico /var/lib/calico /opt/cni/bin /etc/cin/net.d" || return
 }
 
+enable_dashboard()
+{
+    log_info "enable dashboard ..."
+
+    local dashboard_yaml_file="$K8S_SRC/config/dashboard/dashboard.yaml"
+    local dashboard_rbac_yaml_file="$K8S_SRC/config/dashboard/dashboard-rbac.yaml"
+
+    local heapster_yaml_file="$K8S_SRC/config/dashboard/heapster.yaml"
+    local heapster_rbac_yaml_file="$K8S_SRC/config/dashboard/heapster-rbac.yaml"
+
+    local yaml_files="$dashboard_yaml_file $dashboard_rbac_yaml_file $heapster_yaml_file $heapster_rbac_yaml_file"
+    check_files_exist "$yaml_files" || return
+
+    for yaml_file in $yaml_files; do
+        kubectl create -f $yaml_file || {
+            log_error "failed to run `kubectl create -f $yaml_file`"
+            return 1
+        }
+    done
+
+    validate_pod_state "$K8S_IP_MASTER1" "heapster kubernetes-dashboard" || return
+}
+
 ha_update_apiserver_port()
 {
     log_info "updating apiserver port ..."
@@ -1205,6 +1228,7 @@ case "$ACTION" in
             load_worker_images "$K8S_IP_WORKERS" || exit
             ha_init_master || exit
             init_k8s_network || exit
+            enable_dashboard || exit
             ha_join_master || exit
             ha_scale_pods || exit
             make_master_schedulable || exit
@@ -1218,6 +1242,7 @@ case "$ACTION" in
             load_worker_images "$K8S_IP_WORKERS" || exit
             single_init_master  || exit
             init_k8s_network || exit
+            enable_dashboard || exit
             make_master_schedulable || exit
             add_worker_nodes "$K8S_IP_WORKERS" || exit
             update_installed_ip || exit
