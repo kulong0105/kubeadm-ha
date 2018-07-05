@@ -122,7 +122,6 @@ NOTE:
 
 ## TODO
 
-- support dashboard
 - support monitor
 
 

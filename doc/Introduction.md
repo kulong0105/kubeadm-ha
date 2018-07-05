@@ -27,6 +27,8 @@
 | kubectl | 1.9.7 |
 | calico | 3.1.1 |
 | etcd | 3.1.14 |
+| dashboard | 1.8.3 |
+| heapster | 1.5.3 |
 
 
 ## features
