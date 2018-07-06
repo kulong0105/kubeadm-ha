@@ -25,7 +25,7 @@ run below commands and setting on the first `MASTER` node
 
 ### download k8s images
 
-access this url: [https://pan.baidu.com/s/1NJ9rS27AN-UV0BJr1BGD2w](https://pan.baidu.com/s/1NJ9rS27AN-UV0BJr1BGD2w) and download it
+access this url: [https://pan.baidu.com/s/1gcxYJeikB5reXUtaNCYi1g](https://pan.baidu.com/s/1gcxYJeikB5reXUtaNCYi1g) and download it
 
 ### extract images to kubeadm-ha repo
 
